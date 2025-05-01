@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -45,7 +44,6 @@ class GameController extends Controller
     
     public function dailyWord(Request $request)
     {
-<<<<<<< HEAD
     	$request->validate([
        		 'category_id' => 'required|exists:categories,id',
     	]);
@@ -79,7 +77,7 @@ class GameController extends Controller
         	'category' => $word->category->name,
         	'word' => $word,
     	]);
-=======
+
         $request->validate([
             'category_id' => 'required|exists:categories,id',
         ]);
@@ -113,7 +111,6 @@ class GameController extends Controller
             'category' => $word->category->name,
             'word' => $word,
         ]);
->>>>>>> b8e122496adea89ed85798f115e7d111004596bb
     }
   
 
