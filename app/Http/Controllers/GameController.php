@@ -77,7 +77,7 @@ class GameController extends Controller
         	'category' => $word->category->name,
         	'word' => $word,
     	]);
-
+        
         $request->validate([
             'category_id' => 'required|exists:categories,id',
         ]);
