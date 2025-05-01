@@ -45,6 +45,7 @@ class GameController extends Controller
     
     public function dailyWord(Request $request)
     {
+<<<<<<< HEAD
     	$request->validate([
        		 'category_id' => 'required|exists:categories,id',
     	]);
@@ -78,7 +79,43 @@ class GameController extends Controller
         	'category' => $word->category->name,
         	'word' => $word,
     	]);
+=======
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $userId = auth()->id();
+        $today = now()->toDateString();
+
+        // Verifica si el usuario ya respondió hoy en esa categoría
+        $alreadyAnswered = UserResponse::where('user_id', $userId)
+            ->whereDate('created_at', $today)
+            ->whereHas('word', function ($q) use ($request) {
+                $q->where('category_id', $request->category_id);
+            })
+            ->exists();
+
+        if ($alreadyAnswered) {
+            return response()->json(['message' => 'Ya respondiste hoy en esta categoría'], 403);
+        }
+
+        // Selecciona palabra aleatoria de la categoría
+        $word = Word::with('answers', 'category')
+            ->where('category_id', $request->category_id)
+            ->inRandomOrder()
+            ->first();
+
+        if (!$word) {
+            return response()->json(['message' => 'No hay palabras en esta categoría'], 404);
+        }
+
+        return response()->json([
+            'category' => $word->category->name,
+            'word' => $word,
+        ]);
+>>>>>>> b8e122496adea89ed85798f115e7d111004596bb
     }
   
+
 
 }
