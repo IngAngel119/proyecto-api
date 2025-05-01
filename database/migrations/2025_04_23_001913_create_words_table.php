@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('words', function (Blueprint $table) {
             $table->id();
-            $table->date('date')->unique();
             $table->string('definition');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();

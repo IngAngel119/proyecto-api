@@ -43,28 +43,42 @@ class GameController extends Controller
         ]);
     }
     
-    public function dailyWord()
+    public function dailyWord(Request $request)
     {
-        $categoryCount = Category::count();
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+        ]);
 
-        if ($categoryCount === 0) {
-            return response()->json(['message' => 'No hay categorías disponibles'], 404);
+        $userId = auth()->id();
+        $today = now()->toDateString();
+
+        // Verifica si el usuario ya respondió hoy en esa categoría
+        $alreadyAnswered = UserResponse::where('user_id', $userId)
+            ->whereDate('created_at', $today)
+            ->whereHas('word', function ($q) use ($request) {
+                $q->where('category_id', $request->category_id);
+            })
+            ->exists();
+
+        if ($alreadyAnswered) {
+            return response()->json(['message' => 'Ya respondiste hoy en esta categoría'], 403);
         }
 
-        $dayIndex = now()->dayOfYear % $categoryCount;
-
-        $category = \App\Models\Category::skip($dayIndex)->take(1)->first();
-
-        $word = $category->words()->with('answers')->inRandomOrder()->first();
+        // Selecciona palabra aleatoria de la categoría
+        $word = Word::with('answers', 'category')
+            ->where('category_id', $request->category_id)
+            ->inRandomOrder()
+            ->first();
 
         if (!$word) {
-            return response()->json(['message' => 'No hay palabra para hoy en esta categoría'], 404);
+            return response()->json(['message' => 'No hay palabras en esta categoría'], 404);
         }
 
         return response()->json([
-            'category' => $category->name,
+            'category' => $word->category->name,
             'word' => $word,
         ]);
     }
+
 
 }

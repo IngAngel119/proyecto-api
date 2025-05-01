@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('word_id')->constrained()->onDelete('cascade');
             $table->foreignId('answer_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->index(['user_id', 'created_at']);
         });
     }
 
