@@ -11,6 +11,11 @@ use App\Models\Category;
 
 class GameController extends Controller
 {   
+    public function showCategory()
+    {
+        return response()->json(Category::all());
+    }
+
     public function answer(Request $request) {
         $request->validate([
             'word_id' => 'required|exists:words,id',

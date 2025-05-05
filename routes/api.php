@@ -13,6 +13,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/categories', [GameController::class, 'showCategory']);
     Route::get('/daily-word', [GameController::class, 'dailyWord']);
     Route::post('/answer', [GameController::class, 'answer']);
 });
