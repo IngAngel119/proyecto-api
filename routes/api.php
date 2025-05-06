@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserResponseController;
+use App\Http\Controllers\WordController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -13,7 +16,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/categories', [GameController::class, 'showCategory']);
-    Route::get('/daily-word', [GameController::class, 'dailyWord']);
-    Route::post('/answer', [GameController::class, 'answer']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/daily-word', [WordController::class, 'dailyWord']);
+    Route::post('/answer', [UserResponseController::class, 'store']);
 });
