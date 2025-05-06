@@ -54,11 +54,12 @@ class GameController extends Controller
     	]);
 
     	$userId = auth()->id();
-    	$today = now()->toDateString();
+        $startOfDay = now()->startOfDay();
+        $endOfDay = now()->endOfDay();
 	
     	// Verifica si el usuario ya respondió hoy en esa categoría
     	$alreadyAnswered = UserResponse::where('user_id', $userId)
-        	->whereDate('created_at', $today)
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
         	->whereHas('word', function ($q) use ($request) {
             	$q->where('category_id', $request->category_id);
         	})
