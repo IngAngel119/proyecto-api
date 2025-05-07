@@ -11,12 +11,18 @@ class WordController extends Controller
 {
     public function dailyWord(Request $request)
     {
-    	$request->validate([
-            'category_id' => [
-                'required',
-                Rule::exists('categories', 'id')->withMessage(':input'),
-            ],
+    	$validator = Validator::make($request->all(), [
+            'category_id' => 'required|exists:categories,id',
+        ], [
+            'category_id.exists' => ':input', // Mensaje personalizado
         ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The selected category id is invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
     	$userId = auth()->id();
         $startOfDay = now()->startOfDay();
