@@ -11,8 +11,11 @@ class WordController extends Controller
     public function dailyWord(Request $request)
     {
     	$request->validate([
-       		 'category_id' => 'required|exists:categories,id',
-    	]);
+            'category_id' => [
+                'required',
+                Rule::exists('categories', 'id')->withMessage(':input'),
+            ],
+        ]);
 
     	$userId = auth()->id();
         $startOfDay = now()->startOfDay();
