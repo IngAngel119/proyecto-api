@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Word;
+use App\Models\Answer;
 use App\Models\UserResponse;
 
 class UserResponseController extends Controller
@@ -13,6 +14,15 @@ class UserResponseController extends Controller
             'word_id' => 'required|exists:words,id',
             'answer_id' => 'required|exists:answers,id',
         ]);
+    
+        // Verificar si la respuesta pertenece a la palabra
+        $answerBelongsToWord = Answer::where('id', $request->answer_id)
+                                    ->where('word_id', $request->word_id)
+                                    ->exists();
+    
+        if (!$answerBelongsToWord) {
+            return response()->json(['message' => 'This answer does not belong to the word provided.'], 422);
+        }
     
         $alreadyAnswered = UserResponse::where('user_id', auth()->id())
             ->where('word_id', $request->word_id)->exists();
