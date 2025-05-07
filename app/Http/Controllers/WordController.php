@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Word;
 use App\Models\UserResponse;
+use Illuminate\Validation\Rule;
 
 class WordController extends Controller
 {
