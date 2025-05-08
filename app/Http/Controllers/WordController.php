@@ -75,7 +75,7 @@ class WordController extends Controller
         // Filtro por texto (búsqueda que empiece con)
         if ($request->has('search') && !empty($request->search)) {
             $searchTerm = $request->search;
-            $query->where('name', 'like', $searchTerm.'%');
+            $query->where('definition', 'like', $searchTerm.'%');
         }
         
         // Filtro por categoría
@@ -86,10 +86,10 @@ class WordController extends Controller
         // Ordenación
         if ($request->has('order') && !empty($request->order)) {
             $direction = strtoupper($request->order) == 'DESC' ? 'DESC' : 'ASC';
-            $query->orderBy('name', $direction);
+            $query->orderBy('definition', $direction);
         } else {
             // Orden por defecto si no se especifica
-            $query->orderBy('name', 'ASC');
+            $query->orderBy('definition', 'ASC');
         }
         
         // Limite de resultados
