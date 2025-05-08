@@ -63,6 +63,13 @@ class WordController extends Controller
 
     public function searchWords(Request $request)
     {
+        $request->validate([
+            'search' => 'nullable|string',
+            'category_id' => 'nullable|integer|exists:categories,id',
+            'order' => 'nullable|in:ASC,DESC',
+            'limit' => 'nullable|integer|min:1|max:100',
+        ]);
+        
         $query = Word::query();
         
         // Filtro por texto (búsqueda que empiece con)
