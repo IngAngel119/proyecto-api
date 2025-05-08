@@ -23,7 +23,6 @@ class WordController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
     	$userId = auth()->id();
         $startOfDay = now()->startOfDay();
         $endOfDay = now()->endOfDay();
@@ -73,6 +72,8 @@ class WordController extends Controller
             'order.in' => ':input', // Mensaje personalizado
         ]);
 
+        auth()->user();
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Invalid search parameters.',
@@ -80,7 +81,6 @@ class WordController extends Controller
             ], 422);
         }
 
-        $userId = auth()->id();
         $query = Word::query();
 
         // Filtro por texto (búsqueda que empiece con)
