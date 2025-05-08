@@ -40,11 +40,16 @@ class WordController extends Controller
         	return response()->json(['message' => 'You already answered in this category today'], 403);
     	}
 
-    	// Selecciona palabra aleatoria de la categoría
-    	$word = Word::with('answers', 'category')
-        	->where('category_id', $request->category_id)
-        	->inRandomOrder()
-        	->first();
+    	// Selecciona palabra aleatoria de la categoría que no haya sido contestada por el usuario
+        $word = Word::with('answers', 'category')
+        ->where('category_id', $request->category_id)
+        ->whereNotIn('id', function($query) {
+            $query->select('word_id')
+                ->from('user_responses')
+                ->where('user_id', auth()->id());
+        })
+        ->inRandomOrder()
+        ->first();
 
     	if (!$word) {
         	return response()->json(['message' => 'There are no words in this category'], 404);
