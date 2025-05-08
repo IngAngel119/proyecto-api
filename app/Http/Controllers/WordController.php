@@ -60,4 +60,42 @@ class WordController extends Controller
         	'word' => $word,
     	]);
     }
+
+    public function searchWords(Request $request)
+    {
+        $query = Word::query();
+        
+        // Filtro por texto (búsqueda que empiece con)
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where('name', 'like', $searchTerm.'%');
+        }
+        
+        // Filtro por categoría
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        // Ordenación
+        if ($request->has('order') && !empty($request->order)) {
+            $direction = strtoupper($request->order) == 'DESC' ? 'DESC' : 'ASC';
+            $query->orderBy('name', $direction);
+        } else {
+            // Orden por defecto si no se especifica
+            $query->orderBy('name', 'ASC');
+        }
+        
+        // Limite de resultados
+        if ($request->has('limit') && !empty($request->limit)) {
+            $limit = max(1, (int)$request->limit); // Asegurar que sea al menos 1
+            $query->limit($limit);
+        }
+        
+        $words = $query->get();
+        
+        return response()->json([
+            'words' => $words,
+            'count' => $words->count()
+        ]);
+    }
 }
