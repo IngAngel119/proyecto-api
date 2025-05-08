@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Word;
 use App\Models\UserResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class WordController extends Controller
@@ -71,8 +72,6 @@ class WordController extends Controller
             'category_id.exists' => ':input', // Mensaje personalizado
             'order.in' => ':input', // Mensaje personalizado
         ]);
-
-        auth()->user();
 
         if ($validator->fails()) {
             return response()->json([

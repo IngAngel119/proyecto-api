@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Word;
 use App\Models\Answer;
+use Illuminate\Support\Facades\Auth;
 use App\Models\UserResponse;
 
 class UserResponseController extends Controller
