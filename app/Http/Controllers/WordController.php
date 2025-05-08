@@ -80,6 +80,7 @@ class WordController extends Controller
             ], 422);
         }
 
+        $userId = auth()->id();
         $query = Word::query();
 
         // Filtro por texto (búsqueda que empiece con)
