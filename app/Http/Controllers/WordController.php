@@ -70,6 +70,7 @@ class WordController extends Controller
             'limit' => 'nullable|integer|min:1|max:100',
         ], [
             'category_id.exists' => ':input', // Mensaje personalizado
+            'order.in' => ':input', // Mensaje personalizado
         ]);
 
         if ($validator->fails()) {
