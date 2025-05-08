@@ -18,6 +18,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/daily-word', [WordController::class, 'dailyWord']);
-    Route::post('/search', [WordController::class, 'searchWords']);
+    Route::get('/search', [WordController::class, 'searchWords']);
     Route::post('/answer', [UserResponseController::class, 'store']);
 });
