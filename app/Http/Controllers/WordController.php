@@ -63,46 +63,49 @@ class WordController extends Controller
 
     public function searchWords(Request $request)
     {
-        $request->validate([
-            'search' => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'search' => 'nullable|string|max:255',
             'category_id' => 'nullable|integer|exists:categories,id',
-            'order' => 'nullable|in:ASC,DESC',
+            'order' => 'nullable|string|in:ASC,DESC',
             'limit' => 'nullable|integer|min:1|max:100',
+        ], [
+            'category_id.exists' => ':input', // Mensaje personalizado
         ]);
-        
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Invalid search parameters.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
         $query = Word::query();
-        
+
         // Filtro por texto (búsqueda que empiece con)
-        if ($request->has('search') && !empty($request->search)) {
+        if (!empty($request->search)) {
             $searchTerm = $request->search;
             $query->where('definition', 'like', $searchTerm.'%');
         }
-        
+
         // Filtro por categoría
-        if ($request->has('category_id') && !empty($request->category_id)) {
+        if (!empty($request->category_id)) {
             $query->where('category_id', $request->category_id);
         }
-        
+
         // Ordenación
-        if ($request->has('order') && !empty($request->order)) {
-            $direction = strtoupper($request->order) == 'DESC' ? 'DESC' : 'ASC';
-            $query->orderBy('definition', $direction);
-        } else {
-            // Orden por defecto si no se especifica
-            $query->orderBy('definition', 'ASC');
-        }
-        
+        $direction = strtoupper($request->order ?? 'ASC');
+        $query->orderBy('definition', $direction);
+
         // Limite de resultados
-        if ($request->has('limit') && !empty($request->limit)) {
-            $limit = max(1, (int)$request->limit); // Asegurar que sea al menos 1
-            $query->limit($limit);
-        }
-        
+        $limit = $request->limit ?? 100;
+        $query->limit($limit);
+
         $words = $query->get();
-        
+
         return response()->json([
             'words' => $words,
             'count' => $words->count()
-        ], 200, [], JSON_UNESCAPED_UNICODE);
+        ]);
     }
+
 }
