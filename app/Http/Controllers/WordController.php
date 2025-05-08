@@ -103,6 +103,6 @@ class WordController extends Controller
         return response()->json([
             'words' => $words,
             'count' => $words->count()
-        ]);
+        ], 200, [], JSON_UNESCAPED_UNICODE);
     }
 }
