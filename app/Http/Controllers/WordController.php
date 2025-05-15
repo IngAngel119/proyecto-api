@@ -74,7 +74,7 @@ class WordController extends Controller
         // Registrar la solicitud de palabra diaria
         History::create([
             'user_name' => $user->name,
-            'word' => $word->text, 
+            'word' => $word->definition, 
             'event' => History::EVENT_DAILY_WORD_REQUESTED
         ]);
 

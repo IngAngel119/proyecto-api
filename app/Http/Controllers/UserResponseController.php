@@ -34,7 +34,7 @@ class UserResponseController extends Controller
         if ($alreadyAnswered) {
             History::create([
                 'user_name' => $user->name,
-                'word' => Word::find($request->word_id)->text,
+                'word' => Word::find($request->word_id)->definition,
                 'event' => History::EVENT_ALREADY_ANSWERED
             ]);
             
@@ -57,7 +57,7 @@ class UserResponseController extends Controller
         
         History::create([
             'user_name' => $user->name,
-            'word' => $word->text,
+            'word' => $word->definition,
             'event' => $event
         ]);
     
