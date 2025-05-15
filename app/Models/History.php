@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class History extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_name',
-        'word',
+        'user_id',
+        'word_id',
         'event'
     ];
 
+    // Relaciones
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function word()
+    {
+        return $this->belongsTo(Word::class);
+    }
+
+    // Eventos posibles
     const EVENT_DAILY_WORD_REQUESTED = 'daily_word_requested';
     const EVENT_ANSWER_SUBMITTED = 'answer_submitted';
     const EVENT_ANSWER_CORRECT = 'answer_correct';
