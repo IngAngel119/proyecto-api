@@ -26,12 +26,12 @@ class WordController extends Controller
             ], 422);
         }
 
-        $userId = auth()->id();
+        $user = auth()->user(); // Obtenemos el usuario completo
         $startOfDay = now()->startOfDay();
         $endOfDay = now()->endOfDay();
 
         // Verifica si el usuario ya respondió hoy en esa categoría
-        $alreadyAnswered = UserResponse::where('user_id', $userId)
+        $alreadyAnswered = UserResponse::where('user_id', $user->id)
             ->whereBetween('created_at', [$startOfDay, $endOfDay])
             ->whereHas('word', function ($q) use ($request) {
                 $q->where('category_id', $request->category_id);
@@ -39,11 +39,11 @@ class WordController extends Controller
             ->exists();
 
         if ($alreadyAnswered) {
-            // Registrar en el historial
+            // Registrar en el historial con el nombre de usuario
             History::create([
-                'user_id' => $userId,
-                'event' => History::EVENT_ALREADY_ANSWERED,
-                'word_id' => null // No hay palabra específica en este caso
+                'user_name' => $user->name, 
+                'word' => null,
+                'event' => History::EVENT_ALREADY_ANSWERED
             ]);
             
             return response()->json(['message' => 'You already answered in this category today'], 403);
@@ -63,9 +63,9 @@ class WordController extends Controller
         if (!$word) {
             // Registrar en el historial
             History::create([
-                'user_id' => $userId,
-                'event' => History::EVENT_NO_WORDS_AVAILABLE,
-                'word_id' => null
+                'user_name' => $user->name,
+                'word' => null,
+                'event' => History::EVENT_NO_WORDS_AVAILABLE
             ]);
             
             return response()->json(['message' => 'There are no words in this category'], 404);
@@ -73,8 +73,8 @@ class WordController extends Controller
 
         // Registrar la solicitud de palabra diaria
         History::create([
-            'user_id' => $userId,
-            'word_id' => $word->id,
+            'user_name' => $user->name,
+            'word' => $word->text, 
             'event' => History::EVENT_DAILY_WORD_REQUESTED
         ]);
 

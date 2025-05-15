@@ -10,20 +10,10 @@ class History extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'word_id',
+        'user_name',
+        'word',
         'event'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function word()
-    {
-        return $this->belongsTo(Word::class);
-    }
 
     const EVENT_DAILY_WORD_REQUESTED = 'daily_word_requested';
     const EVENT_ANSWER_SUBMITTED = 'answer_submitted';

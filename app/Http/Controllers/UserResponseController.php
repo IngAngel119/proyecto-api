@@ -17,7 +17,7 @@ class UserResponseController extends Controller
             'answer_id' => 'required|exists:answers,id',
         ]);
     
-        $userId = auth()->id();
+        $user = auth()->user();
     
         // Verificar si la respuesta pertenece a la palabra
         $answerBelongsToWord = Answer::where('id', $request->answer_id)
@@ -28,13 +28,13 @@ class UserResponseController extends Controller
             return response()->json(['message' => 'This answer does not belong to the word provided.'], 422);
         }
     
-        $alreadyAnswered = UserResponse::where('user_id', $userId)
+        $alreadyAnswered = UserResponse::where('user_id', $user->id)
             ->where('word_id', $request->word_id)->exists();
     
         if ($alreadyAnswered) {
             History::create([
-                'user_id' => $userId,
-                'word_id' => $request->word_id,
+                'user_name' => $user->name,
+                'word' => Word::find($request->word_id)->text,
                 'event' => History::EVENT_ALREADY_ANSWERED
             ]);
             
@@ -47,7 +47,7 @@ class UserResponseController extends Controller
     
         // Guardar la respuesta del usuario
         UserResponse::create([
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'word_id' => $request->word_id,
             'answer_id' => $request->answer_id,
         ]);
@@ -56,12 +56,11 @@ class UserResponseController extends Controller
         $event = $isCorrect ? History::EVENT_ANSWER_CORRECT : History::EVENT_ANSWER_WRONG;
         
         History::create([
-            'user_id' => $userId,
-            'word_id' => $request->word_id,
+            'user_name' => $user->name,
+            'word' => $word->text,
             'event' => $event
         ]);
     
-        // Respuesta personalizada
         return response()->json([
             'correct' => $isCorrect,
             'message' => $isCorrect ? '¡Right Answer!' : 'Wrong Answer, keep trying.',

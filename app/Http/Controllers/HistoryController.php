@@ -11,34 +11,33 @@ class HistoryController extends Controller
     {
         $user = $request->user();
         
-        $histories = History::with('word')
-            ->where('user_id', $user->id)
+        $histories = History::where('user_name', $user->name)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
         return response()->json($histories);
     }
-    
+
     public function getUserActivity(Request $request)
     {
         $user = $request->user();
         
         $stats = [
-            'total_questions_answered' => History::where('user_id', $user->id)
+            'total_questions_answered' => History::where('user_name', $user->name)
                 ->whereIn('event', [
                     History::EVENT_ANSWER_CORRECT,
                     History::EVENT_ANSWER_WRONG
                 ])->count(),
                 
-            'correct_answers' => History::where('user_id', $user->id)
+            'correct_answers' => History::where('user_name', $user->name)
                 ->where('event', History::EVENT_ANSWER_CORRECT)
                 ->count(),
                 
-            'wrong_answers' => History::where('user_id', $user->id)
+            'wrong_answers' => History::where('user_name', $user->name)
                 ->where('event', History::EVENT_ANSWER_WRONG)
                 ->count(),
                 
-            'daily_words_requested' => History::where('user_id', $user->id)
+            'daily_words_requested' => History::where('user_name', $user->name)
                 ->where('event', History::EVENT_DAILY_WORD_REQUESTED)
                 ->count(),
         ];

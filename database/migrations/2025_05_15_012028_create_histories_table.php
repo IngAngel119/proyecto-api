@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('word_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('user_name');
+            $table->string('word')->nullable();
             $table->string('event');
             $table->timestamps();
         });
