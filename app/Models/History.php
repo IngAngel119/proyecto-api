@@ -15,7 +15,6 @@ class History extends Model
         'event'
     ];
 
-    // Relaciones
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -26,7 +25,6 @@ class History extends Model
         return $this->belongsTo(Word::class);
     }
 
-    // Eventos
     const EVENT_DAILY_WORD_REQUESTED = 'daily_word_requested';
     const EVENT_ANSWER_SUBMITTED = 'answer_submitted';
     const EVENT_ANSWER_CORRECT = 'answer_correct';
